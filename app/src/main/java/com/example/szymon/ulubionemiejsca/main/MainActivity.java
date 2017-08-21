@@ -22,12 +22,27 @@ public class MainActivity extends AppCompatActivity implements MainView {
     TextView textView;
     @BindView(R.id.button)
     Button button;
+    MainPresenter mainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mainPresenter = new MainPresenterImpl();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mainPresenter.onStart(this);
+        mainPresenter.setupLocationManager(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mainPresenter.onStop();
     }
 
 
@@ -57,5 +72,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
             }
         }
 
+    }
+
+    @Override
+    public void updateTextView(String text) {
+        textView.setText(text);
     }
 }
