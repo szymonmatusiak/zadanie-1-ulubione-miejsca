@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.szymon.ulubionemiejsca.Place;
 import com.example.szymon.ulubionemiejsca.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,25 +24,29 @@ import com.google.android.gms.location.LocationServices;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity implements MainView, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 2017;
-    GoogleApiClient googleApiClient;
-    Location location;
-
     @BindView(R.id.text)
     TextView textView;
     @BindView(R.id.button)
     Button button;
     @BindView(R.id.note)
     EditText note;
+
     MainPresenter mainPresenter;
+    private GoogleApiClient googleApiClient;
+    private Location location;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        realm = Realm.getDefaultInstance();
         mainPresenter = new MainPresenterImpl();
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
 
     @OnClick(R.id.button)
     public void onButtonClicked() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
+        final int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_FINE_LOCATION);
@@ -82,6 +87,24 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
             getLastLocationAndSetTextView();
             textView.setText(getLatitudeAndLongitude());
         }
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Place place = realm.createObject(Place.class);
+                place.setLatitude(3);
+                place.setLongitude(5);
+                place.setNote("test");
+            }
+        });
+        RealmResults<Place> places = realm.where(Place.class)
+                .findAll();
+        if (places.size() > 0) {
+            toast(places.size() + "");
+            places.size();
+        } else {
+            toast("works");
+        }
+
     }
 
     @Override
@@ -148,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
 
     @Override
     public void onConnectionSuspended(int i) {
-    toast(i + " " );
+        toast(i + " ");
     }
 
     @Override
