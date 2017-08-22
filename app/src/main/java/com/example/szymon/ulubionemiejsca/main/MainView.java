@@ -8,4 +8,6 @@ import com.example.szymon.ulubionemiejsca.base.IBaseView;
 
 public interface MainView extends IBaseView {
     void updateTextView(String text);
+
+    void toast(String text);
 }

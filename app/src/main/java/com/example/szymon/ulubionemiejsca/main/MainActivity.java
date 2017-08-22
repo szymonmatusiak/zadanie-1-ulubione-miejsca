@@ -24,8 +24,6 @@ import com.google.android.gms.location.LocationServices;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity implements MainView, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 2017;
@@ -39,14 +37,12 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
     MainPresenter mainPresenter;
     private GoogleApiClient googleApiClient;
     private Location location;
-    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        realm = Realm.getDefaultInstance();
         mainPresenter = new MainPresenterImpl();
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -87,24 +83,12 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
             getLastLocationAndSetTextView();
             textView.setText(getLatitudeAndLongitude());
         }
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                Place place = realm.createObject(Place.class);
-                place.setLatitude(3);
-                place.setLongitude(5);
-                place.setNote("test");
-            }
-        });
-        RealmResults<Place> places = realm.where(Place.class)
-                .findAll();
-        if (places.size() > 0) {
-            toast(places.size() + "");
-            places.size();
-        } else {
-            toast("works");
-        }
+        Place place = new Place();
+        place.setLongitude(5);
+        place.setLatitude(5);
+        place.setNote("test");
 
+        mainPresenter.savePlace(place);
     }
 
     @Override
@@ -128,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
             return "check gps";
     }
 
-    private void toast(String text) {
+    public void toast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
