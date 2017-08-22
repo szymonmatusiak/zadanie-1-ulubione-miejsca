@@ -2,26 +2,39 @@ package com.example.szymon.ulubionemiejsca.main;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.szymon.ulubionemiejsca.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements MainView {
+public class MainActivity extends AppCompatActivity implements MainView, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 2017;
+    GoogleApiClient googleApiClient;
+    Location location;
+
     @BindView(R.id.text)
     TextView textView;
     @BindView(R.id.button)
     Button button;
+    @BindView(R.id.note)
+    EditText note;
     MainPresenter mainPresenter;
 
     @Override
@@ -30,19 +43,32 @@ public class MainActivity extends AppCompatActivity implements MainView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mainPresenter = new MainPresenterImpl();
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mainPresenter.onStart(this);
-        mainPresenter.setupLocationManager(this);
+        if (googleApiClient != null) {
+            googleApiClient.connect();
+        }
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mainPresenter.onStop();
+        stopLocationUpdates();
+    }
+
+    private void stopLocationUpdates() {
+        googleApiClient.disconnect();
     }
 
 
@@ -50,12 +76,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void onButtonClicked() {
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_FINE_LOCATION);
-        else
-            textView.setText(Integer.toString(permissionCheck));
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_FINE_LOCATION);
+        } else {
+            getLastLocationAndSetTextView();
+            textView.setText(getLatitudeAndLongitude());
+        }
     }
 
     @Override
@@ -63,19 +89,70 @@ public class MainActivity extends AppCompatActivity implements MainView {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_FINE_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     textView.setText("not granted");
                 }
-                return;
             }
         }
 
     }
 
+    @NonNull
+    private String getLatitudeAndLongitude() {
+        if (location != null) {
+            return location.getLatitude() + " " + location.getLongitude() + " " + location.getAccuracy();
+        } else
+            return "check gps";
+    }
+
+    private void toast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void updateTextView(String text) {
         textView.setText(text);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.location = location;
+        toast("location changed");
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        toast(getLatitudeAndLongitude() + status);
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        toast(provider);
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        toast(provider);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        // toast("onConnected");
+    }
+
+    private void getLastLocationAndSetTextView() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        }
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    toast(i + " " );
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        toast(connectionResult.toString());
     }
 }

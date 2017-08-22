@@ -34,10 +34,5 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
         detachView();
     }
 
-    @Override
-    public void setupLocationManager(Context context) {
-        // if (getView() != null)
-        //   getView().updateTextView("in presenter");
-    }
 
 }
