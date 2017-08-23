@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 
+import com.example.szymon.ulubionemiejsca.MyRealm;
 import com.example.szymon.ulubionemiejsca.Place;
 import com.example.szymon.ulubionemiejsca.base.BasePresenter;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -16,12 +16,12 @@ import io.realm.RealmResults;
  */
 
 public class MainPresenterImpl extends BasePresenter<MainView> implements MainPresenter {
-    private Realm realm;
+    private MyRealm realm;
 
     @Override
     public void onStart(MainView mainView) {
         attachView(mainView);
-        realm = Realm.getDefaultInstance();
+        realm = new MyRealm();
         if (ActivityCompat.checkSelfPermission((Context) mainView, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission((Context) mainView, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -34,18 +34,18 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
 
     @Override
     public void savePlace(final Place place) {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealm(place);
-            }
-        });
+        realm.savePlace(place);
         toast();
     }
 
+    @Override
+    public void openRecyclerActivity() {
+        getView().openRecycler();
+
+    }
+
     public void toast() {
-        RealmResults<Place> places = realm.where(Place.class)
-                .equalTo("note", "test").findAll();
+        RealmResults<Place> places = realm.findAll();
         Place place = places.get(0);
         getView().toast(place.getNote() + " . " + place.getLongitude() + " . " + place.getLatitude());
     }

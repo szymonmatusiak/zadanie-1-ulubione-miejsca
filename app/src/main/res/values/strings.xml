@@ -2,4 +2,5 @@
     <string name="app_name">Ulubione miejsca</string>
     <string name="check_localization">check localization</string>
     <string name="save">save</string>
+    <string name="list">list</string>
 </resources>

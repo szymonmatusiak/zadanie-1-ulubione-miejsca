@@ -1,7 +1,5 @@
 package com.example.szymon.ulubionemiejsca;
 
-import android.location.Location;
-
 import io.realm.RealmObject;
 
 /**
@@ -35,5 +33,9 @@ public class Place extends RealmObject {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getLocationCoordinates() {
+        return String.valueOf(latitude + " " + longitude);
     }
 }

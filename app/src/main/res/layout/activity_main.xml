@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Hello World!"
-        android:textAlignment="center"/>
+        android:textAlignment="center" />
 
     <EditText
         android:id="@+id/note"
@@ -27,5 +27,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/save" />
+
+    <Button
+        android:id="@+id/recycler_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/list" />
 
 </LinearLayout>

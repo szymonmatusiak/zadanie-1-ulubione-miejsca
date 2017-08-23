@@ -12,4 +12,6 @@ public interface MainPresenter {
     void onStop();
 
     void savePlace(Place place);
+
+    void openRecyclerActivity();
 }

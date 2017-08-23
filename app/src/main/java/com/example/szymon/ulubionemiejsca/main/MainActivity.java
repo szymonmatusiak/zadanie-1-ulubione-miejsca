@@ -1,6 +1,7 @@
 package com.example.szymon.ulubionemiejsca.main;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.szymon.ulubionemiejsca.Place;
 import com.example.szymon.ulubionemiejsca.R;
+import com.example.szymon.ulubionemiejsca.RecyclerActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
     Button button;
     @BindView(R.id.note)
     EditText note;
+    @BindView(R.id.recycler_activity)
+    Button recycler_activity;
 
     MainPresenter mainPresenter;
     private GoogleApiClient googleApiClient;
@@ -83,12 +87,20 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
             getLastLocationAndSetTextView();
             textView.setText(getLatitudeAndLongitude());
         }
+
+        // TODO: Replace 4 lines bellow with checking data
+
         Place place = new Place();
         place.setLongitude(5);
         place.setLatitude(5);
         place.setNote("test");
 
         mainPresenter.savePlace(place);
+    }
+
+    @OnClick(R.id.recycler_activity)
+    public void openRecyclerActivity() {
+        mainPresenter.openRecyclerActivity();
     }
 
     @Override
@@ -114,6 +126,11 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
 
     public void toast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void openRecycler() {
+        MainActivity.this.startActivity(new Intent(MainActivity.this, RecyclerActivity.class));
     }
 
     @Override
@@ -148,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
     }
 
     private void getLastLocationAndSetTextView() {
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
