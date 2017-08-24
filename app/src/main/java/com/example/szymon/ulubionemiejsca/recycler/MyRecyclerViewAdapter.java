@@ -13,8 +13,6 @@ import com.example.szymon.ulubionemiejsca.R;
 import com.example.szymon.ulubionemiejsca.recycler.helper.ItemTouchHelperAdapter;
 import com.example.szymon.ulubionemiejsca.recycler.helper.ItemTouchHelperViewHolder;
 
-import java.util.Collections;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -50,13 +48,15 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         return realm.getItemCount();
     }
 
+
     public MyRealm getRealm() {
         return realm;
     }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(realm.findAll(), fromPosition, toPosition);
+        //TODO remove or chage to get this to work
+        //realm.changePositionOfItemsInRange(fromPosition,toPosition);
         notifyItemMoved(fromPosition, toPosition);
         return true;
     }
@@ -67,7 +67,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         notifyItemRemoved(position);
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, ItemTouchHelperViewHolder {
+
+    public class MyViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
         @BindView(R.id.note)
         TextView note;
         @BindView(R.id.location)
@@ -76,29 +77,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
 
         }
 
         public void setData(Place place) {
             this.note.setText(place.getNote());
             this.location.setText(place.getLocationCoordinates() + "      " + place.getPosition());
-        }
-
-        @Override
-        public void onClick(View v) {
-            realm.moveElementUp(getAdapterPosition());
-            notifyDataSetChanged();
-
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            realm.remove(getAdapterPosition());
-            realm.sort();
-            notifyDataSetChanged();
-            return true;
         }
 
         @Override

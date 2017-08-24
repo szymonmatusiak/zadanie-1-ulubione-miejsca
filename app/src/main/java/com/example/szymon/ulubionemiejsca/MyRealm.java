@@ -87,4 +87,12 @@ public class MyRealm implements OnStartDragListener {
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
     }
+
+    public void changePositionOfItemsInRange(int fromPosition, int toPosition) {
+        places.get(fromPosition).setPosition(toPosition);
+        for (Place place : places) {
+            if (place.getPosition() > toPosition && place.getPosition() < fromPosition)
+                place.setPosition(place.getPosition() + 1);
+        }
+    }
 }
