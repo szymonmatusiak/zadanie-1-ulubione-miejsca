@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.szymon.ulubionemiejsca.RecyclerActivity">
+    tools:context="com.example.szymon.ulubionemiejsca.recycler.RecyclerActivity">
 
     <TextView
         android:id="@+id/text_view"

@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.example.szymon.ulubionemiejsca.MyRealm;
 import com.example.szymon.ulubionemiejsca.Place;
 import com.example.szymon.ulubionemiejsca.R;
-import com.example.szymon.ulubionemiejsca.RecyclerActivity;
+import com.example.szymon.ulubionemiejsca.recycler.RecyclerActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;

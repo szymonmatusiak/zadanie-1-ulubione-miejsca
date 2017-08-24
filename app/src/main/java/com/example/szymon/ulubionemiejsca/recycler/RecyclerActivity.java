@@ -1,4 +1,4 @@
-package com.example.szymon.ulubionemiejsca;
+package com.example.szymon.ulubionemiejsca.recycler;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.szymon.ulubionemiejsca.MyRealm;
+import com.example.szymon.ulubionemiejsca.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

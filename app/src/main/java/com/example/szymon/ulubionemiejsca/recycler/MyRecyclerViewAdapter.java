@@ -1,10 +1,19 @@
-package com.example.szymon.ulubionemiejsca;
+package com.example.szymon.ulubionemiejsca.recycler;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.szymon.ulubionemiejsca.MyRealm;
+import com.example.szymon.ulubionemiejsca.Place;
+import com.example.szymon.ulubionemiejsca.R;
+import com.example.szymon.ulubionemiejsca.recycler.helper.ItemTouchHelperAdapter;
+import com.example.szymon.ulubionemiejsca.recycler.helper.ItemTouchHelperViewHolder;
+
+import java.util.Collections;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -13,7 +22,7 @@ import butterknife.ButterKnife;
  * Created by Szymon on 23.08.2017.
  */
 
-public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> {
+public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> implements ItemTouchHelperAdapter {
     private MyRealm realm;
 
     public MyRecyclerViewAdapter() {
@@ -45,7 +54,20 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         return realm;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(realm.findAll(), fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        getRealm().remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, ItemTouchHelperViewHolder {
         @BindView(R.id.note)
         TextView note;
         @BindView(R.id.location)
@@ -77,6 +99,17 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             realm.sort();
             notifyDataSetChanged();
             return true;
+        }
+
+        @Override
+        public void onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY);
+
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0);
         }
     }
 

@@ -1,8 +1,11 @@
-package com.example.szymon.ulubionemiejsca;
+package com.example.szymon.ulubionemiejsca.recycler;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.szymon.ulubionemiejsca.Place;
+import com.example.szymon.ulubionemiejsca.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

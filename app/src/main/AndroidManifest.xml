@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RecyclerActivity"></activity>
+        <activity android:name=".recycler.RecyclerActivity"></activity>
     </application>
 
 </manifest>

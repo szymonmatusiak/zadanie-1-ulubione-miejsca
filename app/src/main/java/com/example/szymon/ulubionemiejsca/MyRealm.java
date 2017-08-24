@@ -1,5 +1,10 @@
 package com.example.szymon.ulubionemiejsca;
 
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+
+import com.example.szymon.ulubionemiejsca.recycler.helper.OnStartDragListener;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -8,10 +13,12 @@ import io.realm.Sort;
  * Created by Szymon on 23.08.2017.
  */
 
-public class MyRealm {
+public class MyRealm implements OnStartDragListener {
     public static int lastPosision;
     RealmResults<Place> places;
     private Realm realm;
+    private ItemTouchHelper mItemTouchHelper;
+
 
     public MyRealm() {
         if (realm == null) {
@@ -67,7 +74,6 @@ public class MyRealm {
                 place.deleteFromRealm();
             }
         });
-
     }
 
     public void moveElementUp(int adapterPosition) {
@@ -75,5 +81,10 @@ public class MyRealm {
 
     public void sort() {
         places.sort("position", Sort.ASCENDING);
+    }
+
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 }
