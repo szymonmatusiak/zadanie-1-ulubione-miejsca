@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
  * Created by Szymon on 23.08.2017.
  */
 
-public class MyViewHolder extends RecyclerView.ViewHolder {
+public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     @BindView(R.id.note)
     TextView note;
     @BindView(R.id.location)
@@ -20,10 +20,16 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     public MyViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        itemView.setOnClickListener(this);
     }
 
     public void setData(Place place) {
         this.note.setText(place.getNote());
         this.location.setText(place.getLocationCoordinates());
+    }
+
+    @Override
+    public void onClick(View v) {
+        getAdapterPosition();
     }
 }

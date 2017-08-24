@@ -9,7 +9,14 @@ import io.realm.RealmObject;
 public class Place extends RealmObject {
     private double longitude;
     private double latitude;
+    private double position;
     private String note;
+
+    public Place() {
+        latitude = 1;
+        longitude = 1;
+        note = "testy o 1 rano";
+    }
 
     public double getLongitude() {
         return longitude;
@@ -37,5 +44,13 @@ public class Place extends RealmObject {
 
     public String getLocationCoordinates() {
         return String.valueOf(latitude + " " + longitude);
+    }
+
+    public double getPosition() {
+        return position;
+    }
+
+    public void setPosition(double position) {
+        this.position = position;
     }
 }

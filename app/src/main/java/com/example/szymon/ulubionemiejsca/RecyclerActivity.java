@@ -28,9 +28,12 @@ public class RecyclerActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerViewAdapter.notifyDataSetChanged();
+
         textView.setText(String.valueOf(recyclerViewAdapter.getRealm().getItemCount()));
         recyclerViewAdapter.notifyDataSetChanged();
-        toast(recyclerViewAdapter.getRealm().get(0).getLocationCoordinates());
+        if (recyclerViewAdapter.getItemCount() > 0) {
+            toast(recyclerViewAdapter.getRealm().get(0).getLocationCoordinates());
+        }
     }
 
     public void toast(String text) {

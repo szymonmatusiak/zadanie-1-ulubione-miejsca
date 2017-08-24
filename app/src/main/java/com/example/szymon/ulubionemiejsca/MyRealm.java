@@ -44,4 +44,18 @@ public class MyRealm {
         return places.size();
     }
 
+    public void remove(final int adapterPosition) {
+        final RealmResults<Place> places = realm.where(Place.class).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Place place = places.get(adapterPosition);
+                place.deleteFromRealm();
+
+            }
+        });
+    }
+
+    public void moveElementUp(int adapterPosition) {
+    }
 }
