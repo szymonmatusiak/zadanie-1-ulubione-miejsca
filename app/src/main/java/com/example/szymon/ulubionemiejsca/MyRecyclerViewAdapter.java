@@ -61,7 +61,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
         public void setData(Place place) {
             this.note.setText(place.getNote());
-            this.location.setText(place.getLocationCoordinates());
+            this.location.setText(place.getLocationCoordinates() + "      " + place.getPosition());
         }
 
         @Override
@@ -74,6 +74,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         @Override
         public boolean onLongClick(View v) {
             realm.remove(getAdapterPosition());
+            realm.sort();
             notifyDataSetChanged();
             return true;
         }

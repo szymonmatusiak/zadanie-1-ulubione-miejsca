@@ -2,12 +2,15 @@ package com.example.szymon.ulubionemiejsca;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by Szymon on 23.08.2017.
  */
 
 public class MyRealm {
+    public static int lastPosision;
+    RealmResults<Place> places;
     private Realm realm;
 
     public MyRealm() {
@@ -16,7 +19,20 @@ public class MyRealm {
         }
     }
 
+    private void setNextElementPosition() {
+        lastPosision = lastPosision + 1;
+    }
+
+    private int getLastElementPosition() {
+        places = findAll();
+        if (places == null || places.size() == 0) {
+            return 0;
+        }
+        return places.max("position").intValue();
+    }
+
     public void savePlace(final Place place) {
+        setNextElementPosition();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -26,36 +42,38 @@ public class MyRealm {
     }
 
     public RealmResults<Place> findAll() {
-        RealmResults<Place> places = realm.where(Place.class).findAll();
-        return places;
+        return places = realm.where(Place.class).findAll();
     }
 
     public Place get(int i) {
-        RealmResults<Place> places;
         places = realm.where(Place.class).findAll();
         Place place = places.get(i);
         return place;
     }
 
     public int getItemCount() {
-        RealmResults<Place> places;
-        places = realm.where(Place.class).findAll();
-        places.size();
+        places = findAll();
+        if (places == null) {
+            return 0;
+        }
         return places.size();
     }
 
     public void remove(final int adapterPosition) {
-        final RealmResults<Place> places = realm.where(Place.class).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 Place place = places.get(adapterPosition);
                 place.deleteFromRealm();
-
             }
         });
+
     }
 
     public void moveElementUp(int adapterPosition) {
+    }
+
+    public void sort() {
+        places.sort("position", Sort.ASCENDING);
     }
 }

@@ -25,7 +25,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClic
 
     public void setData(Place place) {
         this.note.setText(place.getNote());
-        this.location.setText(place.getLocationCoordinates());
+        this.location.setText(place.getLocationCoordinates() + "      "+ place.getPosition());
     }
 
     @Override

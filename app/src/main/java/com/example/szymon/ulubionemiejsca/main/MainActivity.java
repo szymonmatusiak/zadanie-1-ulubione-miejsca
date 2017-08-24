@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.szymon.ulubionemiejsca.MyRealm;
 import com.example.szymon.ulubionemiejsca.Place;
 import com.example.szymon.ulubionemiejsca.R;
 import com.example.szymon.ulubionemiejsca.RecyclerActivity;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
         place.setLongitude(5);
         place.setLatitude(5);
         place.setNote("test");
+        place.setPosition(MyRealm.lastPosision);
 
         mainPresenter.savePlace(place);
     }

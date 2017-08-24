@@ -29,7 +29,7 @@ public class RecyclerActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerViewAdapter.notifyDataSetChanged();
 
-        textView.setText(String.valueOf(recyclerViewAdapter.getRealm().getItemCount()));
+        textView.setText(String.valueOf(recyclerViewAdapter.getRealm().getItemCount() + " " + MyRealm.lastPosision));
         recyclerViewAdapter.notifyDataSetChanged();
         if (recyclerViewAdapter.getItemCount() > 0) {
             toast(recyclerViewAdapter.getRealm().get(0).getLocationCoordinates());
