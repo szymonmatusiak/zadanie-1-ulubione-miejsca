@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
         if (googleApiClient != null) {
             googleApiClient.connect();
         }
-
     }
 
     @Override
@@ -80,29 +80,38 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
 
     @OnClick(R.id.button)
     public void onButtonClicked() {
-        final int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
+        final int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_FINE_LOCATION);
         } else {
-            getLastLocationAndSetTextView();
-            textView.setText(getLatitudeAndLongitude());
+            getLastLocation();
+            Place place = getPlace();
+            mainPresenter.savePlace(place);
         }
+    }
 
-        // TODO: Replace 4 lines bellow with checking data
-
+    @NonNull
+    private Place getPlace() {
         Place place = new Place();
-        place.setLongitude(5);
-        place.setLatitude(5);
-        place.setNote("test");
-        place.setPosition(MyRealm.lastPosision);
-
-        mainPresenter.savePlace(place);
+        if (location != null) {
+            place.setLatitude(location.getLatitude());
+            place.setLongitude(location.getLongitude());
+        }
+        if (textView != null && textView.getTextSize() != 0) {
+            place.setNote(String.valueOf(note.getText()));
+        }
+        place.setPosition(MyRealm.lastPosition);
+        return place;
     }
 
     @OnClick(R.id.recycler_activity)
     public void openRecyclerActivity() {
         mainPresenter.openRecyclerActivity();
+    }
+
+    @Override
+    public void openRecycler() {
+        MainActivity.this.startActivity(new Intent(MainActivity.this, RecyclerActivity.class));
     }
 
     @Override
@@ -112,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
             case MY_PERMISSIONS_REQUEST_FINE_LOCATION: {
                 if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     textView.setText("not granted");
+                    textView.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -131,11 +141,6 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
     }
 
     @Override
-    public void openRecycler() {
-        MainActivity.this.startActivity(new Intent(MainActivity.this, RecyclerActivity.class));
-    }
-
-    @Override
     public void updateTextView(String text) {
         textView.setText(text);
     }
@@ -143,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
-        toast("location changed");
     }
 
     @Override
@@ -163,11 +167,10 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        // toast("onConnected");
+        toast("onConnected");
     }
 
-    private void getLastLocationAndSetTextView() {
-
+    private void getLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);

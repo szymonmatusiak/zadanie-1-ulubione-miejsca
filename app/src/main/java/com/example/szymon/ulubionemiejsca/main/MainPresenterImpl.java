@@ -9,8 +9,6 @@ import com.example.szymon.ulubionemiejsca.MyRealm;
 import com.example.szymon.ulubionemiejsca.Place;
 import com.example.szymon.ulubionemiejsca.base.BasePresenter;
 
-import io.realm.RealmResults;
-
 /**
  * Created by Szymon on 14.08.2017.
  */
@@ -35,7 +33,7 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
     @Override
     public void savePlace(final Place place) {
         realm.savePlace(place);
-        toast();
+        //toast();
     }
 
     @Override
@@ -43,11 +41,11 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
         getView().openRecycler();
 
     }
-
+/*
     public void toast() {
-        RealmResults<Place> places = realm.findAll();
-        Place place = places.get(0);
+        realm.findAll();
+        Place place = realm.getPlaces().get(0);
         getView().toast(place.getNote() + " . " + place.getLongitude() + " . " + place.getLatitude());
-    }
+    }*/
 
 }

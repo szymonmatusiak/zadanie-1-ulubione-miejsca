@@ -14,24 +14,49 @@ import io.realm.Sort;
  */
 
 public class MyRealm implements OnStartDragListener {
-    public static int lastPosision;
-    RealmResults<Place> places;
+    public static int lastPosition;
+    private RealmResults<Place> places;
     private Realm realm;
+    //TODO rename
     private ItemTouchHelper mItemTouchHelper;
-
 
     public MyRealm() {
         if (realm == null) {
             realm = Realm.getDefaultInstance();
+            lastPosition = getItemCount();
         }
     }
 
+    public static int getLastPosition() {
+        return lastPosition;
+    }
+
+    public static void setLastPosition(int lastPosition) {
+        MyRealm.lastPosition = lastPosition;
+    }
+
+    public Realm getRealm() {
+        return realm;
+    }
+
+    public void setRealm(Realm realm) {
+        this.realm = realm;
+    }
+
+    public RealmResults<Place> getPlaces() {
+        return places;
+    }
+
+    public void setPlaces(RealmResults<Place> places) {
+        this.places = places;
+    }
+
     private void setNextElementPosition() {
-        lastPosision = lastPosision + 1;
+        lastPosition = lastPosition + 1;
     }
 
     private int getLastElementPosition() {
-        places = findAll();
+        findAll();
         if (places == null || places.size() == 0) {
             return 0;
         }
@@ -48,18 +73,17 @@ public class MyRealm implements OnStartDragListener {
         });
     }
 
-    public RealmResults<Place> findAll() {
-        return places = realm.where(Place.class).findAll();
+    public void findAll() {
+        places = realm.where(Place.class).findAll().sort("position");
     }
 
     public Place get(int i) {
-        places = realm.where(Place.class).findAll();
         Place place = places.get(i);
         return place;
     }
 
     public int getItemCount() {
-        places = findAll();
+        findAll();
         if (places == null) {
             return 0;
         }
@@ -70,15 +94,20 @@ public class MyRealm implements OnStartDragListener {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Place place = places.get(adapterPosition);
-                place.deleteFromRealm();
+                Place placeToRemove = realm.where(Place.class).equalTo("position", adapterPosition).findFirst();
+                if (placeToRemove != null)
+                    placeToRemove.deleteFromRealm();
+                for (Place place : places) {
+                    if (place.getPosition() > adapterPosition) {
+                        int newValue = place.getPosition() - 1;
+                        place.setPosition(newValue);
+                    }
+                }
             }
         });
     }
 
-    public void moveElementUp(int adapterPosition) {
-    }
-
+    //TODO remove this
     public void sort() {
         places.sort("position", Sort.ASCENDING);
     }
@@ -88,11 +117,68 @@ public class MyRealm implements OnStartDragListener {
         mItemTouchHelper.startDrag(viewHolder);
     }
 
-    public void changePositionOfItemsInRange(int fromPosition, int toPosition) {
-        places.get(fromPosition).setPosition(toPosition);
-        for (Place place : places) {
-            if (place.getPosition() > toPosition && place.getPosition() < fromPosition)
-                place.setPosition(place.getPosition() + 1);
-        }
+    public void changePositionOfItemsInRange(final int fromPosition, final int toPosition) {
+
+        final Place one = realm.where(Place.class).equalTo("position", fromPosition).findFirst();
+        final Place two = realm.where(Place.class).equalTo("position", toPosition).findFirst();
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                int tempPositionHolder;
+                tempPositionHolder = one.getPosition();
+                one.setPosition(toPosition);
+                two.setPosition(tempPositionHolder);
+            }
+        });
+        //TODO: remove this
+
+        /*
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.copyToRealm(one);
+                realm.copyToRealm(two);
+            }
+        });*/
+
+
+        /*remove(fromPosition);
+        remove(toPosition);
+       savePlace(one);
+        savePlace(two);*/
+        /*realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Place one = places.get(fromPosition);
+                one.setPosition(toPosition);
+                Place two = places.get(toPosition);
+                one.setPosition(fromPosition);
+                remove(fromPosition);
+                remove(toPosition);
+                savePlace(one);
+                savePlace(two);
+            }    });*/
+                /*if (toPosition > fromPosition) {
+                    for (Place place : places) {
+                        if (place.getPosition() <= toPosition && place.getPosition() >= fromPosition) {
+                            int newValue = place.getPosition() + 1;
+                            place.setPosition(newValue);
+                        }
+                    }
+                } else {
+                    for (Place place : places) {
+                        if (place.getPosition() >= toPosition && place.getPosition() <= fromPosition) {
+                            int newValue = place.getPosition() - 1;
+                            place.setPosition(newValue);
+                        }
+                    }
+                }*/
+
+    }
+
+    //TODO remove this
+    private Place findByPosition(int position) {
+        return new Place();
     }
 }

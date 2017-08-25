@@ -2,6 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@color/colorRowBackground"
+    android:elevation="10dp"
     android:orientation="vertical">
 
     <TextView
@@ -14,5 +17,8 @@
         android:id="@+id/location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="test location" />
+        android:layout_margin="10dp"
+        android:background="#c4c4c4"
+        android:text="test location"
+        android:textAlignment="center" />
 </LinearLayout>

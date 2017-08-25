@@ -8,30 +8,33 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.szymon.ulubionemiejsca.MyRealm;
+import com.example.szymon.ulubionemiejsca.Place;
 import com.example.szymon.ulubionemiejsca.R;
 import com.example.szymon.ulubionemiejsca.recycler.helper.SimpleItemTouchHelperCallback;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecyclerActivity extends AppCompatActivity {
+public class RecyclerActivity extends AppCompatActivity implements MyRecyclerView, MyRecyclerViewForAdapter {
     @BindView(R.id.text_view)
     TextView textView;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
+    private RecyclerPresenter recyclerPresenter;
     private MyRecyclerViewAdapter recyclerViewAdapter;
     private ItemTouchHelper mItemTouchHelper;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler);
         ButterKnife.bind(this);
+        recyclerPresenter = new RecyclerPresenterImpl();
 
-        recyclerViewAdapter = new MyRecyclerViewAdapter();
+        recyclerViewAdapter = new MyRecyclerViewAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerViewAdapter.notifyDataSetChanged();
@@ -39,20 +42,37 @@ public class RecyclerActivity extends AppCompatActivity {
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(recyclerViewAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
+    }
 
-        textView.setText(String.valueOf(recyclerViewAdapter.getRealm().getItemCount() + " " + MyRealm.lastPosision));
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recyclerPresenter.onStart(this);
         recyclerViewAdapter.notifyDataSetChanged();
-        if (recyclerViewAdapter.getItemCount() > 0) {
-            toast(recyclerViewAdapter.getRealm().get(0).getLocationCoordinates());
-        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        recyclerPresenter.onStop();
     }
 
     public void toast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setPlacesList(List<Place> places) {
+        recyclerViewAdapter.setData(places);
+    }
+
+    @Override
+    public void removeFromDatabase(int position) {
+        recyclerPresenter.removePlaceFromDatabase(position);
+    }
+
+    @Override
+    public void changePositionOfItemsInRange(int fromPosition, int toPosition) {
+        recyclerPresenter.changePositionOfItemsInRange(fromPosition, toPosition);
     }
 }

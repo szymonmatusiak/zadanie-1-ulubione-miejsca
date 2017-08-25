@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.szymon.ulubionemiejsca.MyRealm;
 import com.example.szymon.ulubionemiejsca.Place;
 import com.example.szymon.ulubionemiejsca.R;
 import com.example.szymon.ulubionemiejsca.recycler.helper.ItemTouchHelperAdapter;
 import com.example.szymon.ulubionemiejsca.recycler.helper.ItemTouchHelperViewHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,12 +23,19 @@ import butterknife.ButterKnife;
  */
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.MyViewHolder> implements ItemTouchHelperAdapter {
-    private MyRealm realm;
+    private List<Place> places;
+    private MyRecyclerViewForAdapter myRecyclerViewForAdapter;
 
-    public MyRecyclerViewAdapter() {
-        realm = new MyRealm();
+    public MyRecyclerViewAdapter(MyRecyclerViewForAdapter myRecyclerViewForAdapter) {
+        places = new ArrayList<Place>();
+        this.myRecyclerViewForAdapter = myRecyclerViewForAdapter;
     }
 
+    public void setData(List<Place> places) {
+        this.places.clear();
+        this.places.addAll(places);
+        notifyDataSetChanged();
+    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -37,33 +46,26 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Place place = realm.get(position);
-        if (holder != null) {
-            holder.setData(place);
-        }
+        Place place = places.get(position);
+        holder.setData(place);
     }
 
     @Override
     public int getItemCount() {
-        return realm.getItemCount();
-    }
-
-
-    public MyRealm getRealm() {
-        return realm;
+        return places != null ? places.size() : 0;
     }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        //TODO remove or chage to get this to work
-        //realm.changePositionOfItemsInRange(fromPosition,toPosition);
         notifyItemMoved(fromPosition, toPosition);
+        myRecyclerViewForAdapter.changePositionOfItemsInRange(fromPosition, toPosition);
         return true;
     }
 
     @Override
     public void onItemDismiss(int position) {
-        getRealm().remove(position);
+        myRecyclerViewForAdapter.removeFromDatabase(places.get(position).getPosition());
+        places.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -77,23 +79,22 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
         }
 
         public void setData(Place place) {
             this.note.setText(place.getNote());
-            this.location.setText(place.getLocationCoordinates() + "      " + place.getPosition());
+            this.location.setText(place.getLocationCoordinates());
         }
 
         @Override
         public void onItemSelected() {
             itemView.setBackgroundColor(Color.LTGRAY);
-
         }
 
         @Override
         public void onItemClear() {
-            itemView.setBackgroundColor(0);
+            //TODO R.color.colorRowBackground not working
+            itemView.setBackgroundColor(Color.parseColor("#DFDFDF"));
         }
     }
 
