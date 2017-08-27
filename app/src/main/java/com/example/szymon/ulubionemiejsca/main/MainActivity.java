@@ -136,17 +136,17 @@ public class MainActivity extends AppCompatActivity implements MainView, GoogleA
             return "check gps";
     }
 
-    public void toast(String text) {
+    public void toast(final String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void updateTextView(String text) {
+    public void updateTextView(final String text) {
         textView.setText(text);
     }
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(final Location location) {
         this.location = location;
     }
 

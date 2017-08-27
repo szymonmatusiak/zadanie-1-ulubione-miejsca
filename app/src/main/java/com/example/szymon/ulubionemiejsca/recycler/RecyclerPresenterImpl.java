@@ -15,7 +15,7 @@ public class RecyclerPresenterImpl extends BasePresenter<MyRecyclerView> impleme
     private MyRealm realm;
 
     @Override
-    public void onStart(MyRecyclerView myRecyclerView) {
+    public void onStart(final MyRecyclerView myRecyclerView) {
         attachView(myRecyclerView);
         realm = new MyRealm();
         setDataInRecycle();
@@ -35,7 +35,7 @@ public class RecyclerPresenterImpl extends BasePresenter<MyRecyclerView> impleme
     }
 
     @Override
-    public String getLocationCoordinates(int position) {
+    public String getLocationCoordinates(final int position) {
         if (realm.getPlaces().size() > position) {
             return realm.getPlaces().get(position).getLocationCoordinates();
         } else {
@@ -44,13 +44,13 @@ public class RecyclerPresenterImpl extends BasePresenter<MyRecyclerView> impleme
     }
 
     @Override
-    public void removePlaceFromDatabase(int position) {
+    public void removePlaceFromDatabase(final int position) {
         realm.remove(position);
         MyRealm.setLastPosition(MyRealm.getLastPosition() - 1);
     }
 
     @Override
-    public void changePositionOfItemsInRange(int fromPosition, int toPosition) {
+    public void changePositionOfItemsInRange(final int fromPosition, final int toPosition) {
         realm.changePositionOfItemsInRange(fromPosition, toPosition);
     }
 

@@ -57,22 +57,22 @@ public class RecyclerActivity extends AppCompatActivity implements MyRecyclerVie
         recyclerPresenter.onStop();
     }
 
-    public void toast(String text) {
+    public void toast(final String text) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void setPlacesList(List<Place> places) {
+    public void setPlacesList(final List<Place> places) {
         recyclerViewAdapter.setData(places);
     }
 
     @Override
-    public void removeFromDatabase(int position) {
+    public void removeFromDatabase(final int position) {
         recyclerPresenter.removePlaceFromDatabase(position);
     }
 
     @Override
-    public void changePositionOfItemsInRange(int fromPosition, int toPosition) {
+    public void changePositionOfItemsInRange(final int fromPosition, final int toPosition) {
         recyclerPresenter.changePositionOfItemsInRange(fromPosition, toPosition);
     }
 }

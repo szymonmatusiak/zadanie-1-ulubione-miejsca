@@ -33,19 +33,10 @@ public class MainPresenterImpl extends BasePresenter<MainView> implements MainPr
     @Override
     public void savePlace(final Place place) {
         realm.savePlace(place);
-        //toast();
     }
 
     @Override
     public void openRecyclerActivity() {
         getView().openRecycler();
-
     }
-/*
-    public void toast() {
-        realm.findAll();
-        Place place = realm.getPlaces().get(0);
-        getView().toast(place.getNote() + " . " + place.getLongitude() + " . " + place.getLatitude());
-    }*/
-
 }

@@ -31,21 +31,21 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         this.myRecyclerViewForAdapter = myRecyclerViewForAdapter;
     }
 
-    public void setData(List<Place> places) {
+    public void setData(final List<Place> places) {
         this.places.clear();
         this.places.addAll(places);
         notifyDataSetChanged();
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycle_row, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         Place place = places.get(position);
         holder.setData(place);
     }
@@ -56,14 +56,14 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     }
 
     @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
+    public boolean onItemMove(final int fromPosition, final int toPosition) {
         notifyItemMoved(fromPosition, toPosition);
         myRecyclerViewForAdapter.changePositionOfItemsInRange(fromPosition, toPosition);
         return true;
     }
 
     @Override
-    public void onItemDismiss(int position) {
+    public void onItemDismiss(final int position) {
         myRecyclerViewForAdapter.removeFromDatabase(places.get(position).getPosition());
         places.remove(position);
         notifyItemRemoved(position);
@@ -76,12 +76,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         @BindView(R.id.location)
         TextView location;
 
-        public MyViewHolder(View itemView) {
+        public MyViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void setData(Place place) {
+        public void setData(final Place place) {
             this.note.setText(place.getNote());
             this.location.setText(place.getLocationCoordinates());
         }

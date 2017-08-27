@@ -17,7 +17,6 @@ public class MyRealm implements OnStartDragListener {
     public static int lastPosition;
     private RealmResults<Place> places;
     private Realm realm;
-    //TODO rename
     private ItemTouchHelper mItemTouchHelper;
 
     public MyRealm() {
@@ -31,7 +30,7 @@ public class MyRealm implements OnStartDragListener {
         return lastPosition;
     }
 
-    public static void setLastPosition(int lastPosition) {
+    public static void setLastPosition(final int lastPosition) {
         MyRealm.lastPosition = lastPosition;
     }
 
@@ -39,7 +38,7 @@ public class MyRealm implements OnStartDragListener {
         return realm;
     }
 
-    public void setRealm(Realm realm) {
+    public void setRealm(final Realm realm) {
         this.realm = realm;
     }
 
@@ -47,7 +46,7 @@ public class MyRealm implements OnStartDragListener {
         return places;
     }
 
-    public void setPlaces(RealmResults<Place> places) {
+    public void setPlaces(final RealmResults<Place> places) {
         this.places = places;
     }
 
@@ -77,7 +76,7 @@ public class MyRealm implements OnStartDragListener {
         places = realm.where(Place.class).findAll().sort("position");
     }
 
-    public Place get(int i) {
+    public Place get(final int i) {
         Place place = places.get(i);
         return place;
     }
@@ -113,7 +112,7 @@ public class MyRealm implements OnStartDragListener {
     }
 
     @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+    public void onStartDrag(final RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
     }
 
@@ -131,54 +130,5 @@ public class MyRealm implements OnStartDragListener {
                 two.setPosition(tempPositionHolder);
             }
         });
-        //TODO: remove this
-
-        /*
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealm(one);
-                realm.copyToRealm(two);
-            }
-        });*/
-
-
-        /*remove(fromPosition);
-        remove(toPosition);
-       savePlace(one);
-        savePlace(two);*/
-        /*realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                Place one = places.get(fromPosition);
-                one.setPosition(toPosition);
-                Place two = places.get(toPosition);
-                one.setPosition(fromPosition);
-                remove(fromPosition);
-                remove(toPosition);
-                savePlace(one);
-                savePlace(two);
-            }    });*/
-                /*if (toPosition > fromPosition) {
-                    for (Place place : places) {
-                        if (place.getPosition() <= toPosition && place.getPosition() >= fromPosition) {
-                            int newValue = place.getPosition() + 1;
-                            place.setPosition(newValue);
-                        }
-                    }
-                } else {
-                    for (Place place : places) {
-                        if (place.getPosition() >= toPosition && place.getPosition() <= fromPosition) {
-                            int newValue = place.getPosition() - 1;
-                            place.setPosition(newValue);
-                        }
-                    }
-                }*/
-
-    }
-
-    //TODO remove this
-    private Place findByPosition(int position) {
-        return new Place();
     }
 }

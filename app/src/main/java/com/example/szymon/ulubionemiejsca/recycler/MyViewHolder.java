@@ -20,19 +20,19 @@ public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClic
     @BindView(R.id.location)
     TextView location;
 
-    public MyViewHolder(View itemView) {
+    public MyViewHolder(final View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(this);
     }
 
-    public void setData(Place place) {
+    public void setData(final Place place) {
         this.note.setText(place.getNote());
-        this.location.setText(place.getLocationCoordinates() + "      "+ place.getPosition());
+        this.location.setText(place.getLocationCoordinates() + "      " + place.getPosition());
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         getAdapterPosition();
     }
 }
